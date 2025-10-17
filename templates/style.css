@@ -1,0 +1,108 @@
+/* 基本スタイル（スマホ向け） */
+body {
+  font-family: sans-serif;
+  margin: 0%;
+  padding: 0;
+  line-height: 1.5;
+
+  font-size: 30px;
+
+  background-color: rgb(234, 235, 229);
+}
+
+h2{
+    margin: 0;
+}
+
+h3{
+    margin: 0;
+}
+
+/* iPad 第9世代向け（縦横両対応） */
+@media (min-width: 768px) and (max-width: 810px) {
+  body {
+    font-size: 18px;
+    padding: 20px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 810px; /* iPadの幅に合わせる */
+    margin: 0 auto;
+  }
+
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  button, a {
+    padding: 14px 24px; /* タップしやすいサイズ */
+  }
+}
+
+.button_big1{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+
+    color: white;
+    background: rgb(16, 170, 42);
+
+    margin: 15% 15% 10% 15%;
+    padding: 0;
+
+    border-radius: 20px;
+    border: solid 5px rgb(1, 107, 1);
+
+    transition: all 0.3s ease;
+}
+
+.button_big1:hover{
+    color: white;
+    background: rgb(28, 194, 28);
+    border: solid 5px rgb(1, 107, 1);
+}
+
+.button_big1:active{
+    color: rgb(187, 78, 9);
+    background: rgb(234, 202, 19);
+    border: solid 5px rgb(192, 132, 1);
+}
+
+
+
+
+.button_big1 h2{
+    border-bottom: 8px solid white;
+    padding-bottom: 10px; 
+
+    padding: 10px 0px 30px 0px;
+    margin: 20px 0px 0px 0px;
+
+    font-size: 50px;
+}
+
+.button_big1 h3{
+    font-size: 30px;
+
+    margin: 34px;
+}
+
+.header{
+    background-color: black;
+    color: white;
+    
+    padding: 10px;
+}
+
+.footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: #afb9ae;
+}
+
