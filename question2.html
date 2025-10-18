@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>質問2</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+</head>
+<body>
+
+    <div class="header">
+        <h3>そのときの気分に近い場所はどこですか？</h3>
+    </div>
+
+    <table>
+        <tr>
+        <td>過去</td>
+
+        <td>現在</td>
+
+        <td>未来</td>
+        </tr>
+    </table>
+
+
+    <div class="swipers">
+        <div class="swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="images/building.png"></div>
+            <div class="swiper-slide"><img src="images/forest.png"></div>
+            <div class="swiper-slide"><img src="images/ocean.png"></div>
+            <div class="swiper-slide"><img src="images/flower.png"></div>
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        </div>
+
+
+        <div class="swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="images/building.png"></div>
+            <div class="swiper-slide"><img src="images/forest.png"></div>
+            <div class="swiper-slide"><img src="images/ocean.png"></div>
+            <div class="swiper-slide"><img src="images/flower.png"></div>
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        </div>
+
+
+        <div class="swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="images/building.png"></div>
+            <div class="swiper-slide"><img src="images/forest.png"></div>
+            <div class="swiper-slide"><img src="images/ocean.png"></div>
+            <div class="swiper-slide"><img src="images/flower.png"></div>
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+
+    <a href="#" class="btnripple" id="startBtn">　　　決定　　　</a>
+
+    <div class="footer">
+        <br>
+    </div>
+
+
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+    const swiper = new Swiper('.swiper', {
+    direction: 'vertical',
+    loop: true,
+    slidesPerView: 1,
+    centeredSlides: true,
+    mousewheel: true,
+    pagination: { el: '.swiper-pagination', clickable: true },
+    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const swipers = document.querySelectorAll('.swiper');
+
+        // Swiper 初期化
+        swipers.forEach(sw => {
+            new Swiper(sw, {
+                direction: 'vertical',
+                loop: true,
+                slidesPerView: 1,
+                centeredSlides: true,
+                mousewheel: true,
+                pagination: { el: sw.querySelector('.swiper-pagination'), clickable: true },
+                navigation: { nextEl: sw.querySelector('.swiper-button-next'), prevEl: sw.querySelector('.swiper-button-prev') },
+            });
+        });
+
+        // 決定ボタン押下時
+        document.querySelector('.btnripple').addEventListener('click', () => {
+            const currentSelections = [];
+
+            // 現在の選択を取得
+            swipers.forEach(sw => {
+                const activeSlide = sw.querySelector('.swiper-slide.swiper-slide-active img');
+                let val = 0;
+                if (activeSlide) {
+                    const src = activeSlide.getAttribute('src');
+                    if (src.includes('sunny')) val = 1;
+                    else if (src.includes('cloudy')) val = 2;
+                    else if (src.includes('rain')) val = 3;
+                    else if (src.includes('snowy')) val = 4;
+                }
+                currentSelections.push(val);
+            });
+
+            console.log('今回の選択:', currentSelections);
+
+            // Flask に JSON 送信 → 完了後に次のページへ
+            fetch('/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ selections: currentSelections })
+            })
+            .then(res => res.text())
+            .then(msg => {
+                console.log('サーバー応答:', msg);
+                // ✅ データ送信が完了したらページ遷移
+                window.location.href = 'question3.html';
+            })
+            .catch(err => {
+                console.error('送信エラー:', err);
+                // もしエラーがあっても強制的に次へ進む（必要なら削除してOK）
+                window.location.href = 'question3.html';
+            });
+        });
+    });
+    </script>
+
+
+</body>
+</html>
