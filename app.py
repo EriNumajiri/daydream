@@ -13,17 +13,28 @@ if not os.path.exists(JSON_FILE):
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump([[], [], []], f, ensure_ascii=False, indent=2)
 
+def safe_load_json():
+    """壊れてるJSONを安全に読み込む"""
+    try:
+        with open(JSON_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, FileNotFoundError):
+        print("⚠️ JSONファイルが壊れていたため初期化します")
+        data = [[], [], []]
+        with open(JSON_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        return data
+
 @app.route('/')
 def index():
     return send_from_directory(os.getcwd(), 'index.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    with open(JSON_FILE, 'r', encoding='utf-8') as f:
-        answers = json.load(f)
+    answers = safe_load_json()
 
     data = request.get_json()
-    selections = data.get('selections', [0, 0, 0])
+    selections = data.get('selections', [0, 0, 0])  # 今回分だけ
 
     for i in range(3):
         answers[i].append(selections[i])
@@ -36,13 +47,11 @@ def submit():
 
 @app.route('/get-answers', methods=['GET'])
 def get_answers():
-    with open(JSON_FILE, 'r', encoding='utf-8') as f:
-        answers = json.load(f)
+    answers = safe_load_json()
     return jsonify(answers)
 
 @app.route('/ping', methods=['GET'])
 def ping():
-    """Renderのスリープ防止用"""
     return "pong"
 
 @app.route('/<path:filename>')
