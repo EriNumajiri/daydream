@@ -13,25 +13,21 @@ if not os.path.exists(JSON_FILE):
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump([[], [], []], f, ensure_ascii=False, indent=2)
 
-# プロジェクト直下の index.html を返す
 @app.route('/')
 def index():
     return send_from_directory(os.getcwd(), 'index.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    # 既存の回答を読み込み
     with open(JSON_FILE, 'r', encoding='utf-8') as f:
         answers = json.load(f)
 
     data = request.get_json()
-    selections = data.get('selections', [0, 0, 0])  # 今回分だけ
+    selections = data.get('selections', [0, 0, 0])
 
-    # 過去・現在・未来ごとに追加
     for i in range(3):
         answers[i].append(selections[i])
 
-    # JSON に保存
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump(answers, f, ensure_ascii=False, indent=2)
 
@@ -44,7 +40,11 @@ def get_answers():
         answers = json.load(f)
     return jsonify(answers)
 
-# 同階層の CSS や JS を返す設定（必要なら）
+@app.route('/ping', methods=['GET'])
+def ping():
+    """Renderのスリープ防止用"""
+    return "pong"
+
 @app.route('/<path:filename>')
 def static_files(filename):
     return send_from_directory(os.getcwd(), filename)
