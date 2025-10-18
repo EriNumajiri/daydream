@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, request, jsonify
+from flask import Flask, render_template, request, jsonify
 import json
 import os
 from flask_cors import CORS
@@ -6,17 +6,19 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-JSON_FILE = 'answers.json'
+# JSON ファイルの絶対パス
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+JSON_FILE = os.path.join(BASE_DIR, 'answers.json')
 
 # JSON ファイルがなければ初期化
 if not os.path.exists(JSON_FILE):
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump([[], [], []], f, ensure_ascii=False, indent=2)
 
-# プロジェクト直下の index.html を返す
 @app.route('/')
 def index():
-    return send_from_directory(os.getcwd(), 'index.html')
+    # templates/index.html を表示
+    return render_template("index.html")
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -44,10 +46,6 @@ def get_answers():
         answers = json.load(f)
     return jsonify(answers)
 
-# 同階層の CSS や JS を返す設定（必要なら）
-@app.route('/<path:filename>')
-def static_files(filename):
-    return send_from_directory(os.getcwd(), filename)
-
+# ローカルテスト用
 if __name__ == '__main__':
     app.run(debug=True)
