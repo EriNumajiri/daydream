@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, send_from_directory, request, jsonify
 import json
 import os
 from flask_cors import CORS
@@ -13,9 +13,10 @@ if not os.path.exists(JSON_FILE):
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump([[], [], []], f, ensure_ascii=False, indent=2)
 
+# プロジェクト直下の index.html を返す
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return send_from_directory(os.getcwd(), 'index.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -42,6 +43,11 @@ def get_answers():
     with open(JSON_FILE, 'r', encoding='utf-8') as f:
         answers = json.load(f)
     return jsonify(answers)
+
+# 同階層の CSS や JS を返す設定（必要なら）
+@app.route('/<path:filename>')
+def static_files(filename):
+    return send_from_directory(os.getcwd(), filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
