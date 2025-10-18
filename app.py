@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import json
 import os
 from flask_cors import CORS
@@ -6,34 +6,30 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# JSON ファイルの絶対パス
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_FILE = os.path.join(BASE_DIR, 'answers.json')
 
-# JSON ファイルがなければ初期化
+# JSON ファイル初期化
 if not os.path.exists(JSON_FILE):
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump([[], [], []], f, ensure_ascii=False, indent=2)
 
+# ルートで一番上の階層の index.html を返す
 @app.route('/')
 def index():
-    # templates/index.html を表示
-    return render_template("index.html")
+    return send_from_directory(BASE_DIR, 'index.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    # 既存の回答を読み込み
     with open(JSON_FILE, 'r', encoding='utf-8') as f:
         answers = json.load(f)
 
     data = request.get_json()
-    selections = data.get('selections', [0, 0, 0])  # 今回分だけ
+    selections = data.get('selections', [0, 0, 0])
 
-    # 過去・現在・未来ごとに追加
     for i in range(3):
         answers[i].append(selections[i])
 
-    # JSON に保存
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump(answers, f, ensure_ascii=False, indent=2)
 
@@ -46,6 +42,5 @@ def get_answers():
         answers = json.load(f)
     return jsonify(answers)
 
-# ローカルテスト用
 if __name__ == '__main__':
     app.run(debug=True)
