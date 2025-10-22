@@ -54,7 +54,9 @@
     });
 
     // 決定ボタンが押されたら回答送信
-    document.getElementById('startBtn').addEventListener('click', async () => {
+    document.getElementById('startBtn').addEventListener('click', async (e) => {
+      e.preventDefault(); // aタグのデフォルト動作を防ぐ
+
       const values = Array.from(sliders).map(s => Number(s.value));
 
       // 値を1〜4に変換（25刻みで）
@@ -67,32 +69,30 @@
 
       console.log("質問3の送信データ:", selections);
 
-      // Flask に送信
-  try {
-    const response = await fetch("https://daydream-c1bk.onrender.com/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ 
-        selections,
-        question_number: 3  // ← 質問番号を追加しておくとJSON管理しやすい！
-      })
-    });
-  
-    if (response.ok) {
-      alert("回答を送信しました！");
-      window.location.href = "question4.html"; // 次のページへ
-    } else {
-      alert("送信に失敗しました。");
-    }
-  } catch (err) {
-    console.error("送信エラー:", err);
-    alert("サーバーに接続できません。Flaskが起動しているか確認してください。");
-  }
+      // Render上のFlaskサーバーに送信
+      try {
+        const response = await fetch("https://daydream-c1bk.onrender.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            selections: selections,
+            question_number: 3
+          })
+        });
 
+        if (response.ok) {
+          alert("回答を送信しました！");
+          window.location.href = "question4.html"; // 次のページへ
+        } else {
+          alert("送信に失敗しました。");
+        }
+      } catch (err) {
+        console.error("送信エラー:", err);
+        alert("サーバーに接続できません。Flaskサーバー（Render）が起動しているか確認してください。");
+      }
+    });
   </script>
 </body>
 </html>
-
-
