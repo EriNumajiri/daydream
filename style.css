@@ -224,11 +224,12 @@ td {
     transform: scale(0, 0);
     transition: 0s;
     opacity: 0.3;
-
 }
 
+
+
 /*＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
-/* 縦型レンジスライダー */
+/* 縦型レンジスライダー */   
 
 .slider-container-vertical {
   display: flex;
@@ -246,7 +247,7 @@ td {
   align-items: center;
   gap: 40px;
   height: 300px;
-  margin: 100px auto;
+  margin: 25px auto;
 }
 
 /* ★ 縦向きスライダー修正版 */
@@ -271,18 +272,19 @@ td {
   top: 15px;
 }
 
+
 /* つまみ（thumb） */
 .vslider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: #007aff;
-  background: url('images/volume_3.jpeg') no-repeat center / contain; /* ← ここ！ */
+  background: var(--thumb-image) no-repeat center / contain;
   cursor: pointer;
   border: none;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
+
 
 .vslider::-moz-range-thumb {
   width: 24px;
@@ -292,4 +294,3 @@ td {
   cursor: pointer;
   border: none;
 }
-
