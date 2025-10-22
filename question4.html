@@ -13,6 +13,20 @@
         <h3>そのときの空気は暖かい・冷たい？</h3>
     </div>
 
+    <table>
+        <tr>
+        <td>過去</td>
+        <td>現在</td>
+        <td>未来</td>
+        </tr>
+    </table>
+
+    <div class="slider-container-vertical">
+        <input type="range" class="vslider" min="0" max="100" value="50" step="1">
+        <input type="range" class="vslider" min="0" max="100" value="50" step="1">
+        <input type="range" class="vslider" min="0" max="100" value="50" step="1">
+    </div>
+
     <a href="#" class="btnripple" id="startBtn">　　　決定　　　</a>
 
     <div class="footer">
@@ -24,6 +38,70 @@
         window.location.href = 'end.html';
     });
     </script>
+
+    <script>
+    const sliders = document.querySelectorAll('.vslider');
+
+    // スライダーの見た目と画像切り替え
+    sliders.forEach(slider => {
+      function updateSlider() {
+        const val = Number(slider.value);
+        const percent = val;
+        slider.style.background = `linear-gradient(to right, #3aabd2, #df5656)`;
+
+
+
+        let img = '';
+        if (val < 50) {
+          img = 'images/cold.jpg';
+        } else {
+          img = 'images/hot.jpg';
+        }
+        slider.style.setProperty('--thumb-image', `url(${img})`);
+      }
+      slider.addEventListener('input', updateSlider);
+      updateSlider();
+    });
+
+    // 決定ボタンで送信処理
+    document.getElementById('startBtn').addEventListener('click', async (e) => {
+      e.preventDefault(); // aタグのデフォルト動作を防ぐ
+
+      const values = Array.from(sliders).map(s => Number(s.value));
+
+      // 値を1〜4に変換
+      const selections = values.map(v => {
+        if (v < 25) return 1;
+        else if (v < 50) return 2;
+        else if (v < 75) return 3;
+        else return 4;
+      });
+
+      console.log("質問3の送信データ:", selections);
+
+      try {
+        const response = await fetch("https://daydream-c1bk.onrender.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            selections: selections,
+            question_number: 4
+          })
+        });
+
+        if (response.ok) {
+          console.log("✅ 送信成功");
+          window.location.href = "question4.html"; // 次のページへ
+        } else {
+          console.error("⚠️ サーバーエラー:", response.status);
+        }
+      } catch (err) {
+        console.error("🚫 通信エラー:", err);
+      }
+    });
+  </script>
 
 </body>
 </html>
