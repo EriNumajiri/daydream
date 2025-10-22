@@ -117,10 +117,10 @@
                 let val = 0;
                 if (activeSlide) {
                     const src = activeSlide.getAttribute('src');
-                    if (src.includes('sunny')) val = 1;
-                    else if (src.includes('cloudy')) val = 2;
-                    else if (src.includes('rain')) val = 3;
-                    else if (src.includes('snowy')) val = 4;
+                    if (src.includes('building')) val = 1;
+                    else if (src.includes('forest')) val = 2;
+                    else if (src.includes('ocean')) val = 3;
+                    else if (src.includes('flower')) val = 4;
                 }
                 currentSelections.push(val);
             });
@@ -150,4 +150,5 @@
 
 
 </body>
+
 </html>
