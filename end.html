@@ -3,9 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>送信完了画面</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
+    <div class="header">
+        <h3>切符をお取りください</h3>
+    </div>
+
+
+    <script>
+    // ページ読み込み時に実行
+    window.addEventListener('load', () => {
+        // 10秒後に index.html に戻る
+        setTimeout(() => {
+        window.location.href = "index.html";
+        }, 10000); // ← 10000ミリ秒 = 10秒
+    });
+    </script>
+
+
 </body>
 </html>
