@@ -1,29 +1,93 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>質問3</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>質問3</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
- 
-    <div class="header">
-        <h3>あなたの人生はどのような天気ですか？</h3>
-    </div>
+  <div class="header">
+    <h3>そのとき静かでしたか？賑やかでしたか？</h3>
+  </div>
 
-    <a href="#" class="btnripple" id="startBtn">　　　決定　　　</a>
+  <table>
+    <tr>
+      <td>過去</td>
+      <td>現在</td>
+      <td>未来</td>
+    </tr>
+  </table>
 
-    <div class="footer">
-        <br>
-    </div>
-   
-    <script>
-    document.getElementById('startBtn').addEventListener('click', () => {
-        window.location.href = 'question4.html';
+  <div class="slider-container-vertical">
+    <input type="range" class="vslider" min="0" max="100" value="50" step="1">
+    <input type="range" class="vslider" min="0" max="100" value="50" step="1">
+    <input type="range" class="vslider" min="0" max="100" value="50" step="1">
+  </div>
+
+  <a href="#" class="btnripple" id="startBtn">　　　決定　　　</a>
+
+  <div class="footer"><br></div>
+
+  <script>
+    const sliders = document.querySelectorAll('.vslider');
+
+    // スライダーの表示・画像切り替え
+    sliders.forEach(slider => {
+      function updateSlider() {
+        const val = Number(slider.value);
+        const percent = val;
+        slider.style.background = `linear-gradient(to right, #00bcd4 ${percent}%, #ddd ${percent}%)`;
+
+        let img = '';
+        if (val < 33) {
+          img = 'images/volume_mute.jpeg';
+        } else if (val < 66) {
+          img = 'images/volume_2.jpeg';
+        } else {
+          img = 'images/volume_3.jpeg';
+        }
+        slider.style.setProperty('--thumb-image', `url(${img})`);
+      }
+      slider.addEventListener('input', updateSlider);
+      updateSlider();
     });
-    </script>
 
+    // 決定ボタンが押されたら回答送信
+    document.getElementById('startBtn').addEventListener('click', async () => {
+      const values = Array.from(sliders).map(s => Number(s.value));
+
+      // 値を1〜4に変換（25刻みで）
+      const selections = values.map(v => {
+        if (v < 25) return 1;
+        else if (v < 50) return 2;
+        else if (v < 75) return 3;
+        else return 4;
+      });
+
+      console.log("質問3の送信データ:", selections);
+
+      // Flask に送信
+      try {
+        const response = await fetch("http://localhost:5000/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ selections })
+        });
+
+        if (response.ok) {
+          alert("回答を送信しました！");
+          window.location.href = "question4.html"; // 次のページへ
+        } else {
+          alert("送信に失敗しました。");
+        }
+      } catch (err) {
+        console.error("送信エラー:", err);
+        alert("サーバーに接続できません。Flaskが起動しているか確認してください。");
+      }
+    });
+  </script>
 </body>
 </html>
