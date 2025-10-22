@@ -131,7 +131,9 @@
             fetch('/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ selections: currentSelections })
+                body: JSON.stringify({
+                    question_number: 2,
+                    selections: currentSelections })
             })
             .then(res => res.text())
             .then(msg => {
@@ -152,3 +154,4 @@
 </body>
 
 </html>
+
