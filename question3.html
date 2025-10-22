@@ -32,7 +32,7 @@
   <script>
     const sliders = document.querySelectorAll('.vslider');
 
-    // スライダーの表示・画像切り替え
+    // スライダーの見た目と画像切り替え
     sliders.forEach(slider => {
       function updateSlider() {
         const val = Number(slider.value);
@@ -53,13 +53,13 @@
       updateSlider();
     });
 
-    // 決定ボタンが押されたら回答送信
+    // 決定ボタンで送信処理
     document.getElementById('startBtn').addEventListener('click', async (e) => {
       e.preventDefault(); // aタグのデフォルト動作を防ぐ
 
       const values = Array.from(sliders).map(s => Number(s.value));
 
-      // 値を1〜4に変換（25刻みで）
+      // 値を1〜4に変換
       const selections = values.map(v => {
         if (v < 25) return 1;
         else if (v < 50) return 2;
@@ -69,7 +69,6 @@
 
       console.log("質問3の送信データ:", selections);
 
-      // Render上のFlaskサーバーに送信
       try {
         const response = await fetch("https://daydream-c1bk.onrender.com/submit", {
           method: "POST",
@@ -83,13 +82,15 @@
         });
 
         if (response.ok) {
+          console.log("✅ 送信成功");
           window.location.href = "question4.html"; // 次のページへ
-        } catch (err) {
-        console.error("送信エラー:", err);
-        alert("サーバーに接続できません。Flaskサーバー（Render）が起動しているか確認してください。");
+        } else {
+          console.error("⚠️ サーバーエラー:", response.status);
+        }
+      } catch (err) {
+        console.error("🚫 通信エラー:", err);
       }
     });
   </script>
 </body>
 </html>
-
