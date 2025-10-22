@@ -83,12 +83,8 @@
         });
 
         if (response.ok) {
-          alert("回答を送信しました！");
           window.location.href = "question4.html"; // 次のページへ
-        } else {
-          alert("送信に失敗しました。");
-        }
-      } catch (err) {
+        } catch (err) {
         console.error("送信エラー:", err);
         alert("サーバーに接続できません。Flaskサーバー（Render）が起動しているか確認してください。");
       }
@@ -96,3 +92,4 @@
   </script>
 </body>
 </html>
+
