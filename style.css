@@ -224,4 +224,72 @@ td {
     transform: scale(0, 0);
     transition: 0s;
     opacity: 0.3;
+
 }
+
+/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
+/* 縦型レンジスライダー */
+
+.slider-container-vertical {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  height: 300px;
+  margin: 100px auto;
+}
+
+/* 縦向きスライダー */
+.slider-container-vertical {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  height: 300px;
+  margin: 100px auto;
+}
+
+/* ★ 縦向きスライダー修正版 */
+.vslider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 300px; /* ← スライダーの高さ */
+  height: 40px; /* ← バーの太さ */
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  background: linear-gradient(to right, #007aff 50%, #ddd 50%);
+  border-radius: 40px;
+  outline: none;
+  border: none;
+  transition: background 0.3s;
+  cursor: pointer;
+  display: block;
+
+  /* 中心を揃える */
+  margin: 0 26px; /* ← 間隔を詰める！マイナスOK */
+  position: relative;
+  top: 15px;
+}
+
+/* つまみ（thumb） */
+.vslider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #007aff;
+  background: url('images/volume_3.jpeg') no-repeat center / contain; /* ← ここ！ */
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.vslider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #007aff;
+  cursor: pointer;
+  border: none;
+}
+
