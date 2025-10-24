@@ -42,7 +42,9 @@
         let img = '';
         if (val < 1) {
           img = 'images/volume_mute.jpeg';
-        } else if (val < 50) {
+        } else if (val < 33){
+          img = 'images/volume_1.jpeg';
+        } else if (val < 66) {
           img = 'images/volume_2.jpeg';
         } else {
           img = 'images/volume_3.jpeg';
@@ -94,4 +96,5 @@
   </script>
 </body>
 </html>
+
 
