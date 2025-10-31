@@ -7,11 +7,18 @@ app = Flask(__name__)
 CORS(app)
 
 JSON_FILE = 'answers.json'
+STATE_FILE = 'state.json'  # ← end状態を保存する小さなファイル
 
 # JSONファイルがなければ初期化
 if not os.path.exists(JSON_FILE):
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump([], f, ensure_ascii=False, indent=2)
+
+# 状態ファイルがなければ初期化
+if not os.path.exists(STATE_FILE):
+    with open(STATE_FILE, 'w', encoding='utf-8') as f:
+        json.dump({"state": "none"}, f, ensure_ascii=False, indent=2)
+
 
 def safe_load_json():
     try:
@@ -25,6 +32,19 @@ def safe_load_json():
         return data
 
 
+def load_state():
+    try:
+        with open(STATE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f).get("state", "none")
+    except Exception:
+        return "none"
+
+
+def save_state(state):
+    with open(STATE_FILE, 'w', encoding='utf-8') as f:
+        json.dump({"state": state}, f, ensure_ascii=False, indent=2)
+
+
 @app.route('/')
 def index():
     return send_from_directory(os.getcwd(), 'index.html')
@@ -36,10 +56,10 @@ def submit():
 
     data = request.get_json()
     selections = data.get('selections', [0, 0, 0])
-    question_number = data.get('question_number')  # ← ページごとに送信する質問番号
+    question_number = data.get('question_number')
 
     if question_number is None:
-        question_number = len(answers) + 1  # fallback（互換用）
+        question_number = len(answers) + 1  # fallback
 
     record = {
         "question": question_number,
@@ -48,7 +68,6 @@ def submit():
         "future": selections[2]
     }
 
-    # 🔹 同じ質問番号がすでにある場合は上書き
     updated = False
     for i, ans in enumerate(answers):
         if ans["question"] == question_number:
@@ -56,11 +75,9 @@ def submit():
             updated = True
             break
 
-    # 🔹 なければ新規追加
     if not updated:
         answers.append(record)
 
-    # 保存
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
         json.dump(answers, f, ensure_ascii=False, indent=2)
 
@@ -70,7 +87,28 @@ def submit():
 
 @app.route('/get-answers', methods=['GET'])
 def get_answers():
-    return jsonify(safe_load_json())
+    """回答データ＋end状態を返す"""
+    data = {
+        "answers": safe_load_json(),
+        "state": load_state()
+    }
+    return jsonify(data)
+
+
+@app.route('/end-reached')
+def end_reached():
+    """end.html が開かれたときに呼ばれる"""
+    save_state("end")
+    print("🟥 end.html にアクセスされました！（state = end）")
+    return "OK"
+
+
+@app.route('/reset-state')
+def reset_state():
+    """Unity側で処理完了後に呼べば再実行可能"""
+    save_state("none")
+    print("🔄 stateをリセットしました")
+    return "reset OK"
 
 
 @app.route('/ping', methods=['GET'])
